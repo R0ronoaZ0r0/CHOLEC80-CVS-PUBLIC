@@ -25,22 +25,24 @@ class ColelapsPreprocessor:
 
         # Take the labeled frames
         cap = cv2.VideoCapture(video_path)
-        p_bar = tqdm(total=final_frame)
+        if not cap.isOpened():
+            raise FileNotFoundError(f"Could not open video: {video_path}")
+
+        p_bar = tqdm(total=final_frame + 1)
         i = 0
         while cap.isOpened() and i <= final_frame:
             ret, frame = cap.read()
             if not ret:
                 break
             file_path = os.path.join(self.dest_path, video_tag)
-            if not os.path.exists(file_path):
-                os.mkdir(file_path)
+            os.makedirs(file_path, exist_ok=True)
             file_name = file_path + "/" + str(i) + ".jpg"
             new_frame = self.cut_frame(frame)
             cv2.imwrite(file_name, new_frame)
             i += 1
             p_bar.update(1)
+        p_bar.close()
         cap.release()
-        cv2.destroyAllWindows()
 
         return None
 
@@ -70,4 +72,14 @@ class ColelapsPreprocessor:
         frames_index = pd.read_csv(self.frames_index_path)
         for video_name in video_list:
             final_frame = frames_index[frames_index["video_name"] == video_name]["final_frame"].values[0]
+            video_frames_path = os.path.join(self.dest_path, video_name)
+            expected_frame_count = final_frame + 1
+            final_frame_path = os.path.join(video_frames_path, f"{final_frame}.jpg")
+
+            if os.path.exists(final_frame_path):
+                saved_frame_count = len([name for name in os.listdir(video_frames_path) if name.endswith(".jpg")])
+                if saved_frame_count >= expected_frame_count:
+                    print(f"Skipping {video_name}: {saved_frame_count} frames already exist")
+                    continue
+
             self.video_to_frames(os.path.join(self.cholec80_path, f"videos/{video_name}.mp4"), final_frame)

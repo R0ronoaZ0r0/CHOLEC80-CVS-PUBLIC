@@ -6,9 +6,9 @@ from colenet.colenet_model import ColeNet
 from colenet.evaluator import Cholec80CSVEvaluator
 from colenet.cholec80csv_dataset import Cholec80CSVDataset
 
-backbone = "vgg"
+backbone = "resnet"
 model_path = f"log/{backbone}/best_model.pth"
-root_dir = "/media/manuel/DATA/datasets/COLELAPS FRAMES"
+root_dir = "/home/hemanth/Desktop/CHOLEC80-CVS-PUBLIC/data/cholec80_frames"
 
 print("Loading Model")
 model = ColeNet(backbone)

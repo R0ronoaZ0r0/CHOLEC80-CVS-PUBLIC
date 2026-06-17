@@ -12,6 +12,7 @@ target_fps = 5
 video_fps = 25
 doctors_annotations = pd.read_excel(f"../data/{annotations_file_name}.xlsx", engine='openpyxl')
 result_path = f"../data/{annotations_file_name.split('.')[0]}"
+os.makedirs(result_path, exist_ok=True)
 index_data = pd.read_csv("../results/videos_frames_index.csv")
 
 for video_tag, video_data in doctors_annotations.groupby("video"):

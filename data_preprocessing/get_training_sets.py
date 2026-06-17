@@ -1,4 +1,5 @@
 import glob
+import os
 import pandas as pd
 
 
@@ -22,11 +23,16 @@ def get_stats():
 
 def get_set(video_list):
     result = list()
+    missing_videos = list()
     for video_name in video_list:
-        try:
-            result.append(pd.read_csv(f"../data/surgeons_annotations/{video_name}"))
-        except:
-            print(f"Annotations for {video_name} does not exist")
+        annotation_path = f"../data/surgeons_annotations/{video_name}"
+        if not os.path.exists(annotation_path):
+            missing_videos.append(video_name)
+            continue
+        result.append(pd.read_csv(annotation_path))
+
+    if missing_videos:
+        raise FileNotFoundError(f"Missing annotations: {', '.join(missing_videos)}")
 
     return pd.concat(result)
 

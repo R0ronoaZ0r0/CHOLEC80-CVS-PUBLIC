@@ -1,8 +1,8 @@
 from colenet.trainer import ColenetTrainer
 
-root_dir = "/media/manuel/DATA/datasets/COLELAPS FRAMES"
-backbone = "vgg"
-log_name = "vgg"
+root_dir = "/home/hemanth/Desktop/CHOLEC80-CVS-PUBLIC/data/cholec80_frames"
+backbone = "resnet"
+log_name = "resnet"
 
 epochs = 10
 batch_size = 32
